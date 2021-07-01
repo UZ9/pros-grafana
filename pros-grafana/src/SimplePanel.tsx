@@ -16,31 +16,53 @@ const dataS = [
   [1, 1, 1, 1, 1, 1]
 ];
 
+function translatePosToGui(x: number, y: number, currentWidth: number): [number, number] {
+  const scale = currentWidth / 6.0; 
+
+  return [x * scale, y * scale];
+}
+
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) => {
   const theme = useTheme();
   const styles = getStyles();
 
+  
   // Handle resizing the panel
   const size = width / 6;
 
-  const heading = 0;
 
-  const radianHeading = (heading - 90) * Math.PI / 180.0;
+
+  const dataVals = data.series 
+    .map(series => series.fields.find(field => field.type == "number" && field.name != "date"))
+  
+  // I'm sure there's a better way of doing this, but I don't know enough of grafana to think of a good solution
+  const dataRobotXField = dataVals.find(f => f?.name == "robotx");
+  const dataRobotYField = dataVals.find(f => f?.name == "roboty");
+  const dataRobotHeadingField = dataVals.find(f => f?.name == "robotheading");
+
+  const dataRobotX = dataRobotXField?.values.get(dataRobotXField.values.length - 1);
+  const dataRobotY = dataRobotYField?.values.get(dataRobotYField.values.length - 1);
+  const dataRobotHeading = dataRobotHeadingField?.values.get(dataRobotHeadingField.values.length - 1);
+
+  // Heading calculations
+  const radianHeading = (dataRobotHeading - 90) * Math.PI / 180.0;
 
   const xOffset = Math.cos(radianHeading) * (30 + width / 30);
   const yOffset = Math.sin(radianHeading) * (30 + width / 30);
 
+  const [robotX, robotY] = translatePosToGui(dataRobotX, dataRobotY, width);
+
   return (
     <div>
-      <div style={{ position: "relative", overflow: 'auto', width: width, height: height }}>
+      <div style={{ position: "relative", overflow: 'clip', width: width, height: height }}>
 
 
 
-        <table style={{ border: "2px solid #35393c", overflow: 'clip' }}>
+        <table style={{ border: "1px solid #35393c", overflow: 'clip' }}>
           {
             dataS.map((row, index) => (
               <tr key={row[0]}>
-                {row.map(cellId => <th style={{ border: "2px solid #35393c", textAlign: 'center', width: size, height: size, padding: "5", backgroundColor: "#0f1015" }} key={cellId}></th>)}
+                {row.map(cellId => <th style={{ border: "1px solid #35393c", textAlign: 'center', width: size, height: size, padding: "5", backgroundColor: "#0f1015" }} key={cellId}></th>)}
               </tr>
             ))
           }
@@ -59,10 +81,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
         left: x - (dotRadius) - 2
       }} */}
 
-        
 
-        <div style={{position: "absolute", top: width / 6.0 - 200, left: width / 6.0 - 200}}>
-          <svg width={400} height={400}>
+        <div style={{ position: "absolute", top: robotY - 200, left: robotX - 200 }}>
+          <svg width={width} height={height}>
             <defs>
               <marker id="markerArrow1" fill={theme.palette.red} stroke={theme.palette.red} markerWidth="13" markerHeight="13" refX="2" refY="6" orient="auto">
                 <path d="M2,2 L2,11 L10,6 L2,2" />
@@ -73,7 +94,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
           </svg>
         </div>
 
-        <Marker x={width / 6.0} y={width / 6.0} dotRadius={width / 30} />
+        <Marker x={robotX} y={robotY} dotRadius={width / 30} />
 
       </div>
 

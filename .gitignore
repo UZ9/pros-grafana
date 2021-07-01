@@ -28,3 +28,6 @@ e2e-results/
 
 # Editors
 .idea
+
+# Other plugins
+frser-sqlite-datasource
