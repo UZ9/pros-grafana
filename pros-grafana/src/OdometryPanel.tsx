@@ -29,10 +29,7 @@ export const OdometryPanel: React.FC<Props> = ({ options, data, width, height })
   // Handle resizing the panel
   const size = width / 6;
 
-
-
-  const dataVals = data.series
-    .map(series => series.fields.find(field => field.type == "number" && field.name != "date"))
+  const dataVals = data.series[0].fields;
 
   // I'm sure there's a better way of doing this, but I don't know enough of grafana to think of a good solution
   const dataRobotXField = dataVals.find(f => f?.name == "robotx");
@@ -44,7 +41,7 @@ export const OdometryPanel: React.FC<Props> = ({ options, data, width, height })
   let dataRobotHeading = dataRobotHeadingField?.values.get(dataRobotHeadingField.values.length - 1);
 
   // If the data is invalid or it can't find the given variables, set the default values
-  if (isNaN(dataRobotHeading)) {
+  if (isNaN(dataRobotY)) {
     return (
       <div style={{ position: "relative", overflow: 'clip', width: width, height: height}}>
         <div style={{ textAlign:"center", display: "flex", justifyContent: "center", alignContent: "center", flexDirection: "column", width, height }}>
@@ -80,7 +77,7 @@ export const OdometryPanel: React.FC<Props> = ({ options, data, width, height })
           {
             dataS.map((row) => (
               <tr key={row[0]}>
-                {row.map(cellId => <th style={{ border: "1px solid #35393c", textAlign: 'center', width: size, height: size, padding: "5", backgroundColor: "#0f1015" }} key={cellId}></th>)}
+                {row.map(cellId => <th style={{ border: "1px solid #35393c", textAlign: 'center', width: size, height: size, padding: "5" }} key={cellId}></th>)}
               </tr>
             ))
           }
