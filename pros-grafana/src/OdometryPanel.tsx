@@ -1,19 +1,19 @@
 import React from 'react';
 import { PanelProps } from '@grafana/data';
 import { SimpleOptions } from 'types';
-import { css } from 'emotion';
-import { stylesFactory, useTheme } from '@grafana/ui';
+import { useTheme } from '@grafana/ui';
 import { Marker } from "marker";
 
 interface Props extends PanelProps<SimpleOptions> { }
 
+// To quickly create a table grid, we can just use a 2D array of numbers
 const dataS = [
-  [1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1]
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0]
 ];
 
 function translatePosToGui(x: number, y: number, currentWidth: number): [number, number] {
@@ -24,7 +24,6 @@ function translatePosToGui(x: number, y: number, currentWidth: number): [number,
 
 export const OdometryPanel: React.FC<Props> = ({ options, data, width, height }) => {
   const theme = useTheme();
-
 
   // Handle resizing the panel
   const size = width / 6;
@@ -64,15 +63,11 @@ export const OdometryPanel: React.FC<Props> = ({ options, data, width, height })
   const yOffset = Math.sin(radianHeading) * (30 + width / 30);
 
 
-
   const [robotX, robotY] = translatePosToGui(dataRobotX, dataRobotY, width);
 
   return (
     <div>
       <div style={{ position: "relative", overflow: 'clip', width: width, height: height }}>
-
-
-
         <table style={{ border: "1px solid #35393c", overflow: 'clip' }}>
           {
             dataS.map((row) => (
@@ -98,7 +93,6 @@ export const OdometryPanel: React.FC<Props> = ({ options, data, width, height })
         <Marker x={robotX} y={robotY} dotRadius={width / 30} />
 
       </div>
-
     </div>
 
   );
