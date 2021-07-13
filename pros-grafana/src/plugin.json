@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "panel",
-  "name": "pros-grafana",
+  "name": "Odometry Panel",
   "id": "yerti-pros-grafana-panel",
   "info": {
     "description": "Visualization panels for PROS programs",

@@ -31,37 +31,30 @@ export const OdometryPanel: React.FC<Props> = ({ options, data, width, height })
   const dataVals = data.series[0].fields;
 
   // I'm sure there's a better way of doing this, but I don't know enough of grafana to think of a good solution
-  const dataRobotXField = dataVals.find(f => f?.name == "robotx");
-  const dataRobotYField = dataVals.find(f => f?.name == "roboty");
-  const dataRobotHeadingField = dataVals.find(f => f?.name == "robotheading");
+  const dataRobotXField = dataVals.find(f => f?.name == options.robotXName);
+  const dataRobotYField = dataVals.find(f => f?.name == options.robotYName);
+  const dataRobotHeadingField = dataVals.find(f => f?.name == options.robotHeadingName);
 
   let dataRobotX = dataRobotXField?.values.get(dataRobotXField.values.length - 1);
   let dataRobotY = dataRobotYField?.values.get(dataRobotYField.values.length - 1);
   let dataRobotHeading = dataRobotHeadingField?.values.get(dataRobotHeadingField.values.length - 1);
 
-  // If the data is invalid or it can't find the given variables, set the default values
-  if (isNaN(dataRobotY)) {
-    return (
-      <div style={{ position: "relative", overflow: 'clip', width: width, height: height}}>
-        <div style={{ textAlign:"center", display: "flex", justifyContent: "center", alignContent: "center", flexDirection: "column", width, height }}>
-          <ul>
-            <li>
-              <p>
-                No odometry data was found.
-              </p>
-            </li>
-          </ul>
-        </div>
-      </div>
-    )
+  // Parameter checking
+  if (isNaN(dataRobotX)) {
+    throw new Error("The parameter given for \"Robot X Variable Name\" was invalid. Are you sure the name is the same as the one registered in the program?")
+  } else if (isNaN(dataRobotY)) {
+    throw new Error("The parameter given for \"Robot Y Variable Name\" was invalid. Are you sure the name is the same as the one registered in the program?")
+  } else if (isNaN(dataRobotHeading)) {
+    throw new Error("The parameter given for \"Robot Heading Variable Name\" was invalid. Are you sure the name is the same as the one registered in the program?")
   }
+
+  
 
   // Heading calculations
   const radianHeading = (dataRobotHeading - 90) * Math.PI / 180.0;
 
   const xOffset = Math.cos(radianHeading) * (30 + width / 30);
   const yOffset = Math.sin(radianHeading) * (30 + width / 30);
-
 
   const [robotX, robotY] = translatePosToGui(dataRobotX, dataRobotY, width);
 
