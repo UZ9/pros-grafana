@@ -1,3 +1,9 @@
+# UPDATE
+
+This is not the main part of the project. For the pros-grafana CLI and PROS C++ library, see the following links:
+https://github.com/UZ9/pros-grafana-cli
+https://github.com/UZ9/pros-grafana-lib
+
 # pros-grafana
 Grafana plugin for the VEX Robotics PROS GUI Project. 
 
